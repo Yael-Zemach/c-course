@@ -40,19 +40,18 @@
  * Start from all ones and shift RIGHT by (32 - width): the shift amount is
  * between 0 and 31, so it is never undefined. Then move it up to pos.
  */
-#define FIELD_MASK(pos, width) \
-    ((uint32_t)((0xFFFFFFFFu >> (32u - (uint32_t)(width))) << (pos)))
+#define FIELD_MASK(pos, width) ((uint32_t)((0xFFFFFFFFu >> (32u - (uint32_t)(width))) << (pos)))
 
 /* The value of the field: FIELD_GET(0x12345678u, 8, 8) == 0x56. */
-#define FIELD_GET(reg, pos, width) \
+#define FIELD_GET(reg, pos, width)                                                                 \
     ((uint32_t)(((uint32_t)(reg) >> (pos)) & FIELD_MASK(0u, (width))))
 
 /*
  * reg with the field replaced by val. Bits of val that do not fit in the
  * field are ignored. FIELD_SET(0xFFFFFFFFu, 4, 4, 0x0) == 0xFFFFFF0Fu.
  */
-#define FIELD_SET(reg, pos, width, val)                          \
-    ((uint32_t)(((uint32_t)(reg) & ~FIELD_MASK((pos), (width))) | \
-                (((uint32_t)(val) << (pos)) & FIELD_MASK((pos), (width)))))
+#define FIELD_SET(reg, pos, width, val)                                                            \
+    ((uint32_t)(((uint32_t)(reg) & ~FIELD_MASK((pos), (width)))                                    \
+                | (((uint32_t)(val) << (pos)) & FIELD_MASK((pos), (width)))))
 
 #endif /* BIT_MACROS_H */
