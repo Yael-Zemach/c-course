@@ -10,7 +10,7 @@ The literal `1` is a signed `int` (32 bits). `1 << 31` would need the value 2^31
 ## Q2. What goes wrong with `BIT_SET(reg, i++)` (or with an unparenthesised macro like `#define BIT(n) 1u << n` used as `BIT(1 + 2)`)? Why do functions not have these problems?
 
 Answer:
-A macro is pure text substitution. If a parameter appears more than once in the macro body (like `pos` in `FIELD_SET`), `i++` is pasted in several times, so `i` is incremented more than once, possibly in the same expression without a sequence point (undefined behaviour). Without parentheses the surrounding operators change the meaning: `~BIT(3)` becomes `~1u << 3` = `0xFFFFFFF8` instead of `~0x8`, and an argument like `a & b` becomes `(1u << a) & b`. A function evaluates each argument exactly once, before the call, converts it to the parameter type, and returns one value, so there is no textual pasting and no precedence surprise.
+A macro is pure text substitution. If a parameter appears more than once in the macro body (like `pos` in `FIELD_SET`), `i++` is pasted in several times, so `i` is incremented more than once, possibly in the same expression without a sequence point (undefined behaviour). Without parentheses the surrounding operators change the meaning: `~BIT(3)` becomes `~1u << 3` = `(~1u) << 3` = `0xFFFFFFF0` instead of `~0x8` = `0xFFFFFFF7`, and an argument like `a & b` becomes `(1u << a) & b`. A function evaluates each argument exactly once, before the call, converts it to the parameter type, and returns one value, so there is no textual pasting and no precedence surprise.
 
 ## Q3. Explain `FIELD_SET` step by step for `FIELD_SET(0x12345678, 16, 8, 0xAB)`. Why must it first clear the field?
 
